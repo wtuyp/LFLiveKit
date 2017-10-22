@@ -280,7 +280,12 @@ SAVC(mp4a);
     if (PILI_RTMP_ConnectStream(_rtmp, 0, &_error) == FALSE) {
         goto Failed;
     }
-
+    //dhlu initial time.
+    {NSDate * date = [NSDate date];
+    int64_t initInterval = (date.timeIntervalSince1970 - [RKStreamLog logger].initStartTime)*1000;
+    [[RKStreamLog logger] logWithDict:@{@"lt": @"pinit",@"interval": @(initInterval)}];
+    }
+    //endhlu
     if (self.delegate && [self.delegate respondsToSelector:@selector(socketStatus:status:)]) {
         [self.delegate socketStatus:self status:LFLiveStart];
     }

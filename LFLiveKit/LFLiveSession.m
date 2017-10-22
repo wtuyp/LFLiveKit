@@ -101,6 +101,10 @@
 #pragma mark -- CustomMethod
 - (void)startLive:(LFLiveStreamInfo *)streamInfo {
     if (!streamInfo) return;
+    //dhlu initial time.
+    NSDate * date = [NSDate date];
+    [RKStreamLog logger].initStartTime = date.timeIntervalSince1970;
+    //end dhlu
     _streamInfo = streamInfo;
     _streamInfo.videoConfiguration = _videoConfiguration;
     _streamInfo.audioConfiguration = _audioConfiguration;
@@ -112,6 +116,12 @@
             [wSelf.delegate liveSession:wSelf log:dic];
         }
     };
+    //dhlu,wo should known the default bitrate.
+    NSUInteger videoBitRate = [self.videoEncoder videoBitRate];
+    [[RKStreamLog logger] logWithDict:@{@"lt": @"pbrt",
+                                        @"vbr": @(videoBitRate)
+                                        }];
+    //end dhlu
     
     [self.socket start];
 }
@@ -292,6 +302,8 @@
 }
 
 - (void)socketBufferStatus:(nullable id<LFStreamSocket>)socket status:(LFLiveBuffferState)status {
+
+    
     if((self.captureType & LFLiveCaptureMaskVideo || self.captureType & LFLiveInputMaskVideo) && self.adaptiveBitrate){
         NSUInteger videoBitRate = [self.videoEncoder videoBitRate];
         NSUInteger targetBitrate = videoBitRate;

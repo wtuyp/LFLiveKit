@@ -46,7 +46,9 @@
 @property (copy, nonatomic) NSString *pingRtt;
 // ping packet loss
 @property (copy, nonatomic) NSString *pingloss;
-
+//dhlu initial time
+@property (readwrite, nonatomic) NSTimeInterval initStartTime;
+//end time.
 
 @property (copy, nonatomic) void(^logCallback)(NSDictionary *log);
 
