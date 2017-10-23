@@ -202,6 +202,24 @@ SAVC(mp4a);
 
             _self.debugInfo.dataFlow += frame.data.length;
             _self.debugInfo.elapsedMilli = CACurrentMediaTime() * 1000 - _self.debugInfo.timeStamp;
+            
+            //dhlu,for stat speed.
+            _self.debugInfo.elapsedMilliForSpeed = CACurrentMediaTime() * 1000 - _self.debugInfo.timeStampForSpeed;
+            _self.debugInfo.bandwidthForSpeed += frame.data.length;
+            if(_self.debugInfo.elapsedMilliForSpeed >=20*1000 ){
+                int speed = (int)_self.debugInfo.bandwidthForSpeed/20;
+                if(_self.debugInfo.elapsedMilliForSpeed <100*1000){
+                //非第一次统计.才记录.
+                [[RKStreamLog logger] logWithDict:@{@"lt": @"pspd",
+                                                    @"spd": @(speed)
+                                                    }];
+                }
+                _self.debugInfo.lastSpeed = _self.debugInfo.bandwidthForSpeed;
+                _self.debugInfo.bandwidthForSpeed = 0;
+                _self.debugInfo.timeStampForSpeed = CACurrentMediaTime() * 1000;
+            }
+            //end dhlu
+            
             if (_self.debugInfo.elapsedMilli < 1000) {
                 _self.debugInfo.bandwidth += frame.data.length;
                 if ([frame isKindOfClass:[LFAudioFrame class]]) {
@@ -284,6 +302,8 @@ SAVC(mp4a);
     {NSDate * date = [NSDate date];
     int64_t initInterval = (date.timeIntervalSince1970 - [RKStreamLog logger].initStartTime)*1000;
     [[RKStreamLog logger] logWithDict:@{@"lt": @"pinit",@"interval": @(initInterval)}];
+    //reconnect times
+    [[RKStreamLog logger] logWithDict:@{@"lt": @"retryTimes",@"retryTimes": @(self.retryTimes4netWorkBreaken),@"maxTryTimes": @(self.reconnectCount)}];
     }
     //endhlu
     if (self.delegate && [self.delegate respondsToSelector:@selector(socketStatus:status:)]) {
