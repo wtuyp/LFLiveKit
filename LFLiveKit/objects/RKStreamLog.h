@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>//dhlu,for CGFloat type.
 
 @interface RKStreamLog : NSObject
 
@@ -15,7 +16,7 @@
 // provider
 @property (copy, nonatomic) NSString *pd;
 // log type
-@property (copy, nonatomic) NSString *lt;
+//@property (copy, nonatomic) NSString *lt;//dhlu,不需要在这定义，因为每次调用logWithDict都有lt.
 // os type
 @property (copy, nonatomic) NSString *os;
 // os version
@@ -27,9 +28,9 @@
 // net type,2g,3g,4g,wifi
 @property (copy, nonatomic) NSString *nt;
 // logitude
-@property (copy, nonatomic) NSString *lnt;
+@property (readwrite, nonatomic) CGFloat lnt;//dhlu
 // latitude
-@property (copy, nonatomic) NSString *ltt;
+@property (readwrite, nonatomic) CGFloat ltt;//dhlu
 // region
 @property (copy, nonatomic) NSString *rg;
 // app version
@@ -37,15 +38,15 @@
 // url host
 @property (copy, nonatomic) NSString *host;
 // scheme, protocal type
-@property (copy, nonatomic) NSString *pt;
+//@property (copy, nonatomic) NSString *pt;//dhlu 不再需要，url可以看出是什么协议类型.
 // url
 @property (copy, nonatomic) NSString *url;
 // stream id
 @property (copy, nonatomic) NSString *sid;
 // ping round trip interval
-@property (copy, nonatomic) NSString *pingRtt;
+//@property (copy, nonatomic) NSString *pingRtt;//dhlu,不再需要字符串类型.
 // ping packet loss
-@property (copy, nonatomic) NSString *pingloss;
+//@property (copy, nonatomic) NSString *pingloss;//dhlu,不再需要字符串类型.
 //dhlu initial time
 @property (readwrite, nonatomic) NSTimeInterval initStartTime;
 //end time.

@@ -121,6 +121,8 @@
     [[RKStreamLog logger] logWithDict:@{@"lt": @"pbrt",
                                         @"vbr": @(videoBitRate)
                                         }];
+    //dhlu,set url
+    [RKStreamLog logger].url = streamInfo.url;
     //end dhlu
     
     [self.socket start];
@@ -343,11 +345,11 @@
     [RKStreamLog logger].uid = userId;
 }
 
-- (void)setLongitude:(NSString *)longitude {
+- (void)setLongitude:(CGFloat) longitude {
     [RKStreamLog logger].lnt = longitude;
 }
 
-- (void)setLatitude:(NSString *)latitude {
+- (void)setLatitude:(CGFloat)latitude {
     [RKStreamLog logger].ltt = latitude;
 }
 
