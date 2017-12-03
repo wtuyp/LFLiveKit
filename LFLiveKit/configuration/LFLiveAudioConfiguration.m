@@ -53,6 +53,16 @@
     return audioConfig;
 }
 
++ (instancetype)defaultConfigurationFromSampleBuffer:(CMSampleBufferRef)sampleBuffer {
+    CMAudioFormatDescriptionRef desc = CMSampleBufferGetFormatDescription(sampleBuffer);
+    AudioStreamBasicDescription asbd = *CMAudioFormatDescriptionGetStreamBasicDescription(desc);
+    LFLiveAudioConfiguration *audioConfig = [LFLiveAudioConfiguration new];
+    audioConfig.audioBitrate = LFLiveAudioBitRate_96Kbps;
+    audioConfig.audioSampleRate = asbd.mSampleRate;
+    audioConfig.numberOfChannels = asbd.mChannelsPerFrame;
+    return audioConfig;
+}
+
 - (instancetype)init {
     if (self = [super init]) {
         _asc = malloc(2);

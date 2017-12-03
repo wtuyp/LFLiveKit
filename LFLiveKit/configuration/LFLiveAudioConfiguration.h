@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreMedia/CoreMedia.h>
 
 /// 音频码率 (默认96Kbps)
 typedef NS_ENUM (NSUInteger, LFLiveAudioBitRate) {
@@ -55,6 +56,8 @@ typedef NS_ENUM (NSUInteger, LFLiveAudioQuality){
 /// 音频配置
 + (instancetype)defaultConfigurationForQuality:(LFLiveAudioQuality)audioQuality;
 
++ (instancetype)defaultConfigurationFromSampleBuffer:(CMSampleBufferRef)sampleBuffer;
+
 #pragma mark - Attribute
 ///=============================================================================
 /// @name Attribute
@@ -71,5 +74,9 @@ typedef NS_ENUM (NSUInteger, LFLiveAudioQuality){
 @property (nonatomic, assign, readonly) NSUInteger bufferLength;
 /// 是否開啟消除回音(default NO)
 @property (nonatomic, assign) BOOL echoCancellation;
+
+@property (nonatomic, assign) NSUInteger numberOfTracks;
+
+@property (nonatomic, assign) BOOL tracksMixing;
 
 @end

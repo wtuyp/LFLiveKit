@@ -17,7 +17,7 @@
 #import "LFGPUImageBeautyFilter.h"
 #import "LFH264VideoEncoder.h"
 #import "RKStreamLog.h"
-
+#import "RKAudioMix.h"
 
 @interface LFLiveSession ()<LFAudioCaptureDelegate, LFVideoCaptureDelegate, LFAudioEncodingDelegate, LFVideoEncodingDelegate, LFStreamSocketDelegate>
 
@@ -36,6 +36,7 @@
 /// 上传
 @property (nonatomic, strong) id<LFStreamSocket> socket;
 
+@property (nonatomic, strong) RKAudioDataMix *audioMixer;
 
 #pragma mark -- 内部标识
 /// 调试信息
@@ -141,6 +142,36 @@
             [self.audioCaptureSource mixSideData:audioData weight:LFAudioMixVolumeVeryHigh / 10.0];
         }
     }
+}
+
+- (void)pushAudioMixSample:(nonnull CMSampleBufferRef)sample toTrack:(NSUInteger)track {
+    if (!(self.captureType & LFLiveInputMaskAudio) || !self.audioConfiguration.tracksMixing) {
+        return;
+    }
+    if (!_audioMixer) {
+        _audioMixer = [[RKAudioDataMix alloc] init];
+    }
+    AudioBufferList audioBufferList;
+    CMBlockBufferRef blockBuffer;
+    CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sample,
+                                                            NULL,
+                                                            &audioBufferList,
+                                                            sizeof(audioBufferList),
+                                                            NULL,
+                                                            NULL,
+                                                            0,
+                                                            &blockBuffer);
+    if (track == 0) {
+        [self.audioMixer process:audioBufferList];
+    } else {
+        for (int i = 0; i < audioBufferList.mNumberBuffers; i++) {
+            AudioBuffer audioBuffer = audioBufferList.mBuffers[i];
+            NSData *data = [NSData dataWithBytes:audioBuffer.mData length:audioBuffer.mDataByteSize];
+            //[self.audioMixer pushData:data];
+            [self pushAudio:data];
+        }
+    }
+    CFRelease(blockBuffer);
 }
 
 - (void)previousColorFilter {
